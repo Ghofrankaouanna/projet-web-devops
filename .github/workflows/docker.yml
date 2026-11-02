@@ -10,8 +10,4 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v4
-
-      - name: build docker image
-        run: docker build -t devops-web:v1 .
+      
