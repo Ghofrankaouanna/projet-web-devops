@@ -1,4 +1,4 @@
-name: docker CI
+name: Docker CI
 
 on:
   push:
@@ -10,4 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t devops-web:v1 .
+
+      - name: Run Docker container
+        run: docker run -d --name test-web -p 8086:80 devops-web:v1
+
+      - name: Test web application
+        run: |
+          for i in {1..10}; do
+            if curl -fsS http://localhost:8086; then
+              echo "Website is working!"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Website test failed!"
+          exit 1
+
+      - name: Stop test container
+        if: always()
+        run: docker rm -f test-web || true
       
